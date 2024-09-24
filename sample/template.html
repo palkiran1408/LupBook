@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$lang$" xml:lang="$lang$"$if(dir)$ dir="$dir$"$endif$>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+$for(author-meta)$
+  <meta name="author" content="$author-meta$" />
+$endfor$
+$if(date-meta)$
+  <meta name="dcterms.date" content="$date-meta$" />
+$endif$
+$if(keywords)$
+  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
+$endif$
+$if(description-meta)$
+  <meta name="description" content="$description-meta$" />
+$endif$
+  <title>$pagetitle$</title>
+
+  <!-- Third-party components -->
+  <!-- Terminal (xtermjs) -->
+  <script src="$lbdir$/node_modules/@xterm/xterm/lib/xterm.js"></script>
+  <script src="$lbdir$/node_modules/@xterm/addon-fit/lib/addon-fit.js"></script>
+  <link rel="stylesheet" href="$lbdir$/node_modules/@xterm/xterm/css/xterm.css"/>
+  <!-- Code editor (CodeMirror) -->
+  <link rel="stylesheet" href="$lbdir$/node_modules/codemirror/lib/codemirror.css"/>
+  <script src="$lbdir$/node_modules/codemirror/lib/codemirror.js"></script>
+  <script src="$lbdir$/node_modules/codemirror/addon/edit/matchbrackets.js"></script>
+  <script src="$lbdir$/node_modules/codemirror/mode/clike/clike.js"></script>
+  <!-- UI toolkit (Bootstrap) -->
+  <link rel="stylesheet" href="$lbdir$/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="$lbdir$/node_modules/bootstrap-icons/font/bootstrap-icons.min.css"/>
+  <script src="$lbdir$/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="$lbdir$/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+  <script src="$lbdir$/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <!-- LupBook components -->
+
+  <!-- VM -->
+  <script src="$lbdir$/build/lupbookvm.js"></script>
+
+  <!-- Activities -->
+  <script src="$lbdir$/modules/lupbook.js"></script>
+  <script src="$lbdir$/sample/handleTheme.js"></script>
+  <script src="$lbdir$/modules/toc.js"></script>
+  <script src="$lbdir$/modules/fib.js"></script>
+  <script src="$lbdir$/modules/icode.js"></script>
+  <script src="$lbdir$/modules/matching.js"></script>
+  <script src="$lbdir$/modules/mcq.js"></script>
+  <script src="$lbdir$/modules/parsons.js"></script>
+  <script src="$lbdir$/modules/hparsons.js"></script>
+
+  <link rel="stylesheet" href="$lbdir$/modules/lupbook.css"/>
+  <link rel="stylesheet" href="$lbdir$/modules/fib.css"/>
+  <link rel="stylesheet" href="$lbdir$/modules/icode.css"/>
+  <link rel="stylesheet" href="$lbdir$/modules/matching.css"/>
+  <link rel="stylesheet" href="$lbdir$/modules/mcq.css"/>
+  <link rel="stylesheet" href="$lbdir$/modules/parsons.css"/>
+
+  <!-- Custom components -->
+  <!-- Custom CSS-->
+  <link rel="stylesheet" href="./template.css"/>
+$for(header-includes)$
+  $header-includes$
+$endfor$
+$if(math)$
+  $math$
+$endif$
+</head>
+<body>
+  <!-- Custom includes -->
+$for(include-before)$
+$include-before$
+$endfor$
+  <!-- Sticky top bar for navigation and options -->
+  <nav class="navbar sticky-top bg-body-secondary py-1 flex-nowrap">
+    <div class="container-fluid">
+      <!-- Main TOC -->
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#lb-main-toc-offcanvas">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="offcanvas offcanvas-start" tabindex="-1" id="lb-main-toc-offcanvas">
+        <div class="offcanvas-header align-items-baseline bg-body-secondary">
+          <div class="d-flex flex-column">
+            <h5 class="offcanvas-title"><a class="text-decoration-none text-reset" href="#">$pagetitle$</a>$if(subtitle)$<br><small class="text-body-secondary">$subtitle$</small>$endif$</h5>
+            $for(author)$
+            <small class="fst-italic fw-light">$author$</small>
+            $endfor$
+            $if(date)$
+            <small class="fw-light">$date$</small>
+            $endif$
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body text-body-secondary lb-toc">
+$main-toc$
+        </div>
+      </div>
+      <!-- Section title -->
+      <span id="lb-page-title" class="fs-5 text-truncate">$pagetitle$</span>
+      <!-- Configuration -->
+      <div>
+        <div class="dropdown d-inline-block ms-3">
+          <button class="btn theme-toggle-btn dropdown-toggle" type="button" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              Select Theme
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="themeDropdown">
+              <li><a class="dropdown-item" href="#" onclick="setTheme('auto')">Auto</a></li>
+              <li><a class="dropdown-item" href="#" onclick="setTheme('light')">Light</a></li>
+              <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">Dark</a></li>
+          </ul>
+      </div>      
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#lb-config-offcanvas">
+          <i class="bi bi-three-dots-vertical"></i>
+        </button>
+      </div>
+      <div class="offcanvas offcanvas-end" tabindex="-2" id="lb-config-offcanvas">
+        <div class="offcanvas-header bg-body-secondary" >
+          <h5 class="offcanvas-title">Actions</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-4 pt-0">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item">
+              <button class="btn btn-link nav-link" type="button" data-bs-toggle="modal" data-bs-target="#lbvm-terminal-modal">
+                <i class="bi bi-terminal"></i>
+                <span class="ms-2">Show terminal</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- Terminal modal -->
+  <div class="modal fade" id="lbvm-terminal-modal" tabindex="-1" aria-labelledby="lbvm-terminal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">LupBookVM Terminal</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body lbvm-terminal-container">
+          <div id="lbvm-terminal"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-xxl">
+    <div class="row">
+      <aside id="lb-page-toc-aside" class="col-md-2 d-none d-md-block text-body-secondary lb-toc">
+        <strong class="h6 my-2 ms-3">Outline</strong>
+        <hr class="my-2 ms-3">
+$page-toc$
+      </aside>
+
+      <main id="lb-page-body" data-bs-spy="scroll" data-bs-smooth-scroll="true" data-bs-target="#lb-page-toc-aside" class="col-md-10">
+        <section id="lb-root-section" class="level0 d-none">
+$body$
+        </section>
+      </main>
+    </div>
+  </div>
+  <!-- Footer -->
+  <footer>
+    <div class="lupbook-footer d-flex flex-column bg-body-secondary p-2">
+      <div class="px-2 fw-bold">$pagetitle$</div>
+      $if(subtitle)$
+      <div class="px-2 fw-light">$subtitle$</div>
+      $endif$
+      $for(author)$
+      <small class="px-2 fw-light fst-italic">$author$</small>
+      $endfor$
+      $if(date)$
+      <small class="px-2 fw-light">$date$</small>
+      $endif$
+    </div>
+  </footer>
+$for(include-after)$
+$include-after$
+$endfor$
+</body>
+</html>
